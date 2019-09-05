@@ -1,0 +1,17 @@
+{
+  "name": "drupal/saml_rules",
+  "type": "drupal-module",
+  "description": "Configure rules based on response data from SAML provider.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/saml_rules",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/saml_rules",
+    "source": "http://cgit.drupalcode.org/saml_rules"
+  },
+  "require": { 
+    "drupal/samlauth": "^3.0",
+    "onelogin/php-saml": "^3"
+  }
+}

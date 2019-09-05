@@ -1,0 +1,5 @@
+services:
+  saml_rules.route_subscriber:
+    class: Drupal\saml_rules\Routing\SAMLRulesSubscriber
+    tags:
+      - { name: event_subscriber }

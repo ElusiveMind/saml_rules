@@ -1,0 +1,14 @@
+sso_roles.sso_roles:
+  path: 'admin/config/people/sso_roles'
+  defaults:
+    _form: '\Drupal\sso_roles\Form\SSORolesSettingsForm'
+    _title: 'SSO Roles General Settings'
+  requirements:
+    _permission: 'administer sso roles'
+sso_roles.sso_roles_settings_form:
+  path: 'admin/config/people/sso_roles/settings'
+  defaults:
+    _form: '\Drupal\sso_roles\Form\SSORolesSettingsForm'
+    _title: 'SSO Roles General Settings'
+  requirements:
+    _permission: 'administer sso roles'

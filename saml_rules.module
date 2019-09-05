@@ -1,0 +1,117 @@
+<?php
+
+/**
+ * @file
+ * Contains sso_roles.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use OneLogin\Saml2\Settings;
+use OneLogin\Saml2\Response;
+use OneLogin\Saml2\Auth;
+use OneLogin\Saml2\Error;
+use OneLogin\Saml2\Utils;
+use Drupal\user\Entity\User;
+
+/**
+ * Implements hook_help().
+ */
+function saml_rules_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.sso_roles':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module works with a SAML provider to perform actions when accounts are created. This can be
+        anything from assigning roles to users to configuring actions based on variables inside of the data sent by the SAML provider.') . '</p>';
+      return $output;
+    default:
+  }
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function saml_rules_user_login($account) {
+  $config = \Drupal::config('samlauth.authentication');
+  define('ONELOGINCUSTOMPATH', $config->get('sp_cert_folder'));
+  $settings = [
+    'sp' => [
+      'x509cert' => file_get_contents($config->get('sp_cert_folder') . '/certs/sp.crt'),
+      'privateKey' => file_get_contents($config->get('sp_cert_folder') . '/certs/sp.key'),
+      'entityId' => $config->get('sp_entity_id'),
+      'assertionConsumerService' => [
+        'url' => 'https://' . $_SERVER['SERVER_NAME'] . '/saml/acs',
+      ],
+    ],
+    'idp' => [
+      'x509cert' => $config->get('idp_x509_certificate'),
+      'entityId' => $config->get('idp_entity_id'),
+      'singleSignOnService' => [
+        'url' => $config->get('idp_single_sign_on_service'),
+      ],
+      'singleLogoutService' => [
+        'url' => $config->get('idp_single_log_out_service'),
+      ],
+    ],
+  ];
+
+  $settings = new Settings($settings);
+  $resp['errors'] = array();
+  $resp['lastError'] = $resp['lastErrorException'] = null;
+  if (isset($_POST['SAMLResponse'])) {
+    // AuthnResponse -- HTTP_POST Binding
+    $response = new Response($settings, $_POST['SAMLResponse']);
+    $resp['lastResponse'] = $response->getXMLDocument();
+    if ($response->isValid($requestId)) {
+      $resp['attributes'] = $response->getAttributes();
+      $resp['attributesWithFriendlyName'] = $response->getAttributesWithFriendlyName();
+      $resp['nameid'] = $response->getNameId();
+      $resp['nameidFormat'] = $response->getNameIdFormat();
+      $resp['nameidNameQualifier'] = $response->getNameIdNameQualifier();
+      $resp['nameidSPNameQualifier'] = $response->getNameIdSPNameQualifier();
+      $resp['authenticated'] = true;
+      $resp['sessionIndex'] = $response->getSessionIndex();
+      $resp['sessionExpiration'] = $response->getSessionNotOnOrAfter();
+      $resp['lastMessageId'] = $response->getId();
+      $resp['lastAssertionId']= $response->getAssertionId();
+      $resp['lastAssertionNotOnOrAfter'] = $response->getAssertionNotOnOrAfter();
+    }
+    else {
+      $resp['errors'][] = 'invalid_response';
+      $resp['lastErrorException'] = $response->getErrorException();
+      $resp['lastError'] = $response->getError();
+    }
+    
+    if (!empty($resp['errors'])) {
+      print "<pre>Errors\n"; print_r($resp['errors']); exit(); 
+    }
+    else {
+      // Load the current user.
+      $user = User::load(\Drupal::currentUser()->id());
+
+      // Set our custom fields for users with our eAuth attributes.
+      $user->set('field_eauth_id', $resp['attributes']['usdaeauthid'][0]);
+      $user->set('field_assurance_level', $resp['attributes']['usdaassurancelevel'][0]);
+
+     /**
+      * If we have the default email for users who have not provided one, or if the email
+      * field is blank, then we need to create one that is unique. For now we are taking
+      * the first and last names separated by a dot.
+      */
+      if ($resp['attributes']['usdaemail'][0] == 'EEMSCERT@ftc.usda.gov') {
+        $name = explode(' ', $user->getUsername());
+        $mail = strtolower($name[0]) . '.' . strtolower($name[count($name)-1]) . '@usda.gov';
+        $user->setEmail($mail);
+      }
+
+      // Set the role based on the role provided by eAuth.
+      $assurance_level = $resp['attributes']['usdaassurancelevel'][0];
+      if ($assurance_level == 2) {
+        $user->addRole('usda_user');
+      }
+      else {
+        $user->addRole('public_user"');
+      }
+      $user->save();
+    }
+  }
+}

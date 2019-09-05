@@ -1,0 +1,9 @@
+uuid: 7ac8bab4-b409-4069-b266-e8b07cb53ff4
+langcode: en
+status: true
+dependencies: {  }
+id: usda_user
+label: 'USDA User'
+weight: 4
+is_admin: null
+permissions: {  }

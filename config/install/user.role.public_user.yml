@@ -1,0 +1,9 @@
+uuid: 3b1ce1bd-e5f2-423e-a33a-a950b5130939
+langcode: en
+status: true
+dependencies: {  }
+id: public_user
+label: 'Public User'
+weight: 3
+is_admin: null
+permissions: {  }

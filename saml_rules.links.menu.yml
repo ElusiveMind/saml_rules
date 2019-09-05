@@ -1,0 +1,10 @@
+saml_rules.saml_rules:
+  title: 'SAML Rules'
+  description: 'Rules for actions that should be taken based on SAML Metadata.'
+  route_name: saml_rules.rules_form
+  parent: user.admin_index
+saml_rules.settings_form:
+  title: 'Settings'
+  description: 'General settings for SAML Rules.'
+  route_name: saml_rules.settings_form
+  parent: saml_rules.saml_rukes
