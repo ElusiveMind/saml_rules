@@ -1,3 +1,0 @@
-sso_login_path: saml/login
-require_auth: 0
-redirect_all: 0

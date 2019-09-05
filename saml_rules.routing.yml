@@ -1,14 +1,73 @@
-sso_roles.sso_roles:
-  path: 'admin/config/people/sso_roles'
+saml_rules.saml_rules:
+  path: 'admin/config/people/saml-rules'
   defaults:
-    _form: '\Drupal\sso_roles\Form\SSORolesSettingsForm'
-    _title: 'SSO Roles General Settings'
+    _controller: '\Drupal\saml_rules\Controller\SAMLRulesAuthRulesMatrix::display_rules'
+    _title: 'SAML Authentication Rules Matrix'
   requirements:
-    _permission: 'administer sso roles'
-sso_roles.sso_roles_settings_form:
-  path: 'admin/config/people/sso_roles/settings'
+    _permission: 'administer saml rules'
+
+saml_rules.authentication_view:
+  path: 'admin/config/people/saml-rules/authentication'
   defaults:
-    _form: '\Drupal\sso_roles\Form\SSORolesSettingsForm'
-    _title: 'SSO Roles General Settings'
+    _controller: '\Drupal\saml_rules\Controller\SAMLRulesAuthRulesMatrix::display_rules'
+    _title: 'SAML Authentication Rules Matrix'
   requirements:
-    _permission: 'administer sso roles'
+    _permission: 'administer saml rules'
+saml_rules.authentication_rules_add:
+  path: 'admin/config/people/saml-rules/authentication/add'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
+    _title: 'SAML Authentication Rules Form'
+  requirements:
+    _permission: 'administer saml rules'
+saml_rules.authentication_edit:
+  path: 'admin/config/people/saml-rules/authentication/edit/{rid}'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
+    _title: 'SAML Authentication Rules Form'
+  requirements:
+    _permission: 'administer saml rules'
+saml_rules.authentication_delete:
+  path: 'admin/config/people/saml-rules/authentication/delete/{rid}'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleDeleteForm'
+    _title: 'Delete a SAML Authentication Rule'
+  requirements:
+    _permission: 'administer saml rules'
+
+saml_rules.user_field_view:
+  path: 'admin/config/people/saml-rules/user-field'
+  defaults:
+    _controller: '\Drupal\saml_rules\Controller\SAMLRulesUserFieldRulesMatrix::display_rules'
+    _title: 'SAML User Field Rules Matrix'
+  requirements:
+    _permission: 'administer saml rules'
+saml_rules.user_field_add:
+  path: 'admin/config/people/saml-rules/user-field/add'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
+    _title: 'SAML Authentication Rules Form'
+  requirements:
+    _permission: 'administer saml rules'
+saml_rules.saml_rules_user_field_edit:
+  path: 'admin/config/people/saml-rules/user-field/edit/{rid}'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesUserFieldRulesForm'
+    _title: 'Edit an Existing User Field Rule'
+  requirements:
+    _permission: 'administer saml rules'
+saml_rules.saml_rules_edit:
+  path: 'admin/config/people/saml-rules/user-field/delete/{rid}'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesDeleteUSerFieldRuleForm'
+    _title: 'Delete a User Field Rule'
+  requirements:
+    _permission: 'administer saml rules'
+
+saml_rules.settings_form:
+  path: 'admin/config/people/saml-rules/settings'
+  defaults:
+    _form: '\Drupal\saml_rules\Form\SAMLRulesSettingsForm'
+    _title: 'SAML Rules Settings'
+  requirements:
+    _permission: 'administer saml rules'

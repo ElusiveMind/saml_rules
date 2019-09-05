@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\sso_roles\Controller;
+namespace Drupal\saml_rules\Controller;
 
 use Drupal\Core\Url;
 use Drupal\Core\Form\ConfigFormBase;
@@ -10,8 +10,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * Class SAMLRulesAdministrationController.
+ * Class SAMLRulesUserFieldRulesMatrix.
  */
-class SAMLRulesAdministrationController extends ControllerBase {
+class SAMLRulesUserFieldRulesMatrix extends ControllerBase {
+  public function display_rules() {
 
+    
+  }
 }

@@ -1,21 +1,21 @@
 <?php
 
-namespace Drupal\sso_roles\Form;
+namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class SSORolesSettgingsForm.
+ * Class SAMLRulesSettingsForm.
  */
-class SSORolesSettingsForm extends ConfigFormBase {
+class SAMLRulesSettingsForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
     return [
-      'sso_roles.settings',
+      'saml_rules.settings',
     ];
   }
 
@@ -23,23 +23,23 @@ class SSORolesSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'sso_roles_settings_form';
+    return 'saml_rules_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('sso_roles.settings');
-    $sso_login_path = ($config->get('sso_login_path') != NULL) ? $config->get('sso_login_path') : 'saml/login';
+    $config = $this->config('saml_rules.settings');
+    $saml_login_path = ($config->get('saml_login_path') != NULL) ? $config->get('saml_login_path') : 'saml/login';
 
-    $form['sso_login_path'] = [
+    $form['saml_login_path'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('SSO Login Path'),
-      '#description' => $this->t('The URL the user will use to login via the SSO service provider.'),
+      '#title' => $this->t('SAML Login Path'),
+      '#description' => $this->t('The URL the user will use to login via the SAML service provider.'),
       '#maxlength' => 255,
       '#size' => 64,
-      '#default_value' => $sso_login_path,
+      '#default_value' => $saml_login_path,
       '#required' => TRUE,
       '#weight' => 1,
     ];
@@ -52,7 +52,7 @@ class SSORolesSettingsForm extends ConfigFormBase {
     ];
     $form['redirect_all'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Redirect Login Page to SSO'),
+      '#title' => $this->t('Redirect Login Page to SAML'),
       '#description' => $this->t('Redirects Drupal login page to the login page for the SSL (SSO Login Path)'),
       '#default_value' => $config->get('redirect_all'),
       '#weight' => 3,
@@ -73,15 +73,14 @@ class SSORolesSettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    $this->config('sso_roles.settings')
-      ->set('sso_login_path', $form_state->getValue('sso_login_path'))
+    $this->config('saml_rules.settings')
+      ->set('saml_login_path', $form_state->getValue('saml_login_path'))
       ->save();
-    $this->config('sso_roles.settings')
+    $this->config('saml_rules.settings')
       ->set('require_auth', $form_state->getValue('require_auth'))
       ->save();
-    $this->config('sso_roles.settings')
+    $this->config('saml_rules.settings')
       ->set('redirect_all', $form_state->getValue('redirect_all'))
       ->save();
   }
 }
-s

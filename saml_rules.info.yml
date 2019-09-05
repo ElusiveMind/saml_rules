@@ -1,11 +1,11 @@
 name: SAML Rules
 type: module
 description: Configure rules based on response data from SAML provider.
-package: Authentication
+package: User authentication
 version: 8.x-1.x
 core: 8.x
 
 dependencies:
   - samlauth:samlauth
 
-php: 7.2
+php: 7.1
