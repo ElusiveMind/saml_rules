@@ -15,6 +15,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class SAMLRulesUserFieldRulesMatrix extends ControllerBase {
   public function display_rules() {
 
-    
+    return [];
   }
 }

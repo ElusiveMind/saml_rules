@@ -3,3 +3,7 @@ services:
     class: Drupal\saml_rules\Routing\SAMLRulesRouteSubscriber
     tags:
       - { name: event_subscriber }
+  saml_rules.anonymous_login:
+    class: Drupal\saml_rules\EventSubscriber\SAMLRulesAnonymousLogin
+    tag:
+      - { name: event_subscriber }

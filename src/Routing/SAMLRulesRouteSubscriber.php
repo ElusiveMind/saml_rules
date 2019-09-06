@@ -21,9 +21,12 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     // Change the default path of our user login to the SAML login if that option
     // is configured to do so.
     $config = \Drupal::config('saml_rules.settings');
-    //if ($route = $collection->get('user.login')) {
-    //  $route->setPath($config->get('saml_login_path'));
-    //}
+    $redirect_all = $config->get('redirect_all');
+    if (!empty($redirect_all)) {
+      if ($route = $collection->get('user.login')) {
+        $route->setPath($config->get('saml_login_path'));
+      }
+    }
   }
 
 }

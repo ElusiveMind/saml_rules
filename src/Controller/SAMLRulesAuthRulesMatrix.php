@@ -16,5 +16,6 @@ class SAMLRulesAuthRulesMatrix extends ControllerBase {
 
   public function display_rules() {
 
+    return [];
   }
 }
