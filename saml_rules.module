@@ -97,15 +97,56 @@ function saml_rules_user_login($account) {
         $config->set('attributes', $keys);
       }
 
+      // Load our SAML arrributes into PHP variables for string replacement.
+      $attributes = array_keys($resp['attributes']);
+      foreach ($attributes as $attribute) {
+        $$attribute = $resp['attributes'][$attribute][0];
+      }
+
       // Load the current user.
       $user = User::load(\Drupal::currentUser()->id());
 
       // User field rule mappings are performed here.
-
-
+      $config = $this->config('saml_rules.user_field_rules');
+      $rules = $config->get('rules');
+      foreach ($rules as $rule) {
+        if ($rule['rule_type'] == 'condition') {
+          if ($rule['condition_operand'] == 'equal') {
+            if ($$rule['condition_saml'] == $rule['condition_value']) {
+              $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
+              $user->set($rule['user_field'], $$rule['user_field']);
+            }
+          }
+          else {
+            if ($$rule['condition_saml'] != $rule['condition_value']) {
+              $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
+              $user->set($rule['user_field'], $$rule['user_field']);
+            }
+          }
+        }
+        else {
+          $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
+          $user->set($rule['user_field'], $$rule['user_field']);
+        }
+      }
 
       // Authentication rule mappings are performed here.
-
+      $config = $this->config('saml_rules.authentication_rules');
+      $rules = $config->get('rules');
+      foreach ($rules as $rule) {
+        if ($$rule['saml_attribute'] == $rule['saml_value']) {
+          if ($rule['action'] == 'email') {
+            $mail = preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['email']);
+            $user->setEmail($mail);
+          }
+          else {
+            foreach ($rule['roles'] as $role) {
+              $user->addRole($role);
+            }
+          }
+        }
+      }
+      $user->save();
     }
   }
 }
