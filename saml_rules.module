@@ -94,8 +94,9 @@ function saml_rules_user_login($account) {
       $config = \Drupal::configFactory()->getEditable('saml_rules.settings');
       $attributes_hash = $config->get('attributes_hash');
       $keys = array_keys($resp['attributes']);
-      if (md5($keys) != $attributes_hash) {
+      if (md5(serialize($keys)) != $attributes_hash) {
         $config->set('attributes', $keys);
+        $condig->set('attributes_hash', md5(serialize($keys)));
       }
       $config->save();
 
