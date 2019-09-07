@@ -115,19 +115,19 @@ function saml_rules_user_login($account) {
         if ($rule['rule_type'] == 'condition') {
           if ($rule['condition_operand'] == 'equal') {
             if ($ndata[$rule['condition_saml']] == $rule['condition_value']) {
-              $value = preg_replace_callback("/\[(\w+)\]/", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+              $value = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['user_value']);
               $user->set($rule['user_field'], $value);
             }
           }
           else {
             if ($ndata[$rule['condition_saml']] != $rule['condition_value']) {
-              $value = preg_replace_callback("/\[(\w+)\]/", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+              $value = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['user_value']);
               $user->set($rule['user_field'], $value);
             }
           }
         }
         else {
-          $value = preg_replace_callback("/\[(\w+)\]/", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+          $value = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['user_value']);
           $user->set($rule['user_field'], $value);
         }
       }
@@ -138,7 +138,7 @@ function saml_rules_user_login($account) {
       foreach ($rules as $rule) {
         if ($ndata[$rule['saml_attribute']] == $rule['saml_value']) {
           if ($rule['action'] == 'email') {
-            $email = preg_replace_callback("/\[(\w+)\]/", "\$\\1", 'saml_rules_replace_tokens', $rule['email']);
+            $email = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['email']);
             $user->setEmail($mail);
           }
           else {
