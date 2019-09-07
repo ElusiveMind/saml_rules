@@ -31,6 +31,7 @@ function saml_rules_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_user_login().
  */
 function saml_rules_user_login($account) {
+  global $ndata;
   $config = \Drupal::config('samlauth.authentication');
   define('ONELOGINCUSTOMPATH', $config->get('sp_cert_folder'));
   
@@ -101,7 +102,7 @@ function saml_rules_user_login($account) {
       // Load our SAML arrributes into PHP variables for string replacement.
       $attributes = array_keys($resp['attributes']);
       foreach ($attributes as $attribute) {
-        $$attribute = $resp['attributes'][$attribute][0];
+        $ndata[$attribute] = $resp['attributes'][$attribute][0];
       }
 
       // Load the current user.
@@ -113,21 +114,21 @@ function saml_rules_user_login($account) {
       foreach ($rules as $rule) {
         if ($rule['rule_type'] == 'condition') {
           if ($rule['condition_operand'] == 'equal') {
-            if ($$rule['condition_saml'] == $rule['condition_value']) {
-              $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
-              $user->set($rule['user_field'], $$rule['user_field']);
+            if ($ndata[$rule['condition_saml']] == $rule['condition_value']) {
+              $value = preg_replace_callback("/\[(\w+)\]/e", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+              $user->set($rule['user_field'], $value);
             }
           }
           else {
-            if ($$rule['condition_saml'] != $rule['condition_value']) {
-              $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
-              $user->set($rule['user_field'], $$rule['user_field']);
+            if ($ndata[$rule['condition_saml']] != $rule['condition_value']) {
+              $value = preg_replace_callback("/\[(\w+)\]/e", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+              $user->set($rule['user_field'], $value);
             }
           }
         }
         else {
-          $$rule['user_field'] == preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['user_value']);
-          $user->set($rule['user_field'], $$rule['user_field']);
+          $value = preg_replace_callback("/\[(\w+)\]/e", "\$\\1", 'saml_rules_replace_tokens', $rule['user_value']);
+          $user->set($rule['user_field'], $value);
         }
       }
 
@@ -135,9 +136,9 @@ function saml_rules_user_login($account) {
       $config = \Drupal::config('saml_rules.authentication_rules');
       $rules = $config->get('rules');
       foreach ($rules as $rule) {
-        if ($$rule['saml_attribute'] == $rule['saml_value']) {
+        if ($ndata[$rule['saml_attribute']] == $rule['saml_value']) {
           if ($rule['action'] == 'email') {
-            $mail = preg_replace("/\[(\w+)\]/e", "\$\\1", $rule['email']);
+            $email = preg_replace_callback("/\[(\w+)\]/e", "\$\\1", 'saml_rules_replace_tokens', $rule['email']);
             $user->setEmail($mail);
           }
           else {
@@ -150,4 +151,20 @@ function saml_rules_user_login($account) {
       $user->save();
     }
   }
+}
+
+/**
+ * saml_rules_replace_tokens().
+ * 
+ * This is our preg_replace_callback() callback. I am not a big fan of the way PHP
+ * forces me to do this. If anyone has a better way, I am all patches.
+ */
+function saml_rules_replace_tokens($matches) {
+  global $ndata;
+  $subject = $matches[0];
+  array_shift($matches);
+  foreach ($matches as $match) {
+    $subject = str_replace('[' . $match . ']', $ndata[$match], $subject);
+  }
+  return $subject;
 }
