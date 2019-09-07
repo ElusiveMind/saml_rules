@@ -36,7 +36,7 @@ class SAMLRulesUserFieldRuleDeleteForm extends ConfirmFormBase {
     $config = \Drupal::service('config.factory')->getEditable('saml_rules.user_field_rules');
     $rules = $config->get('rules');
     unset($rules[$this->rule_machine_name]);
-    $config->set('rules', $rule)->save();
+    $config->set('rules', $rules)->save();
     drupal_set_message($this->t('The user field rule %rule_name was deleted.', [
       '%rule_name' => $this->rule_machine_name,
     ]));

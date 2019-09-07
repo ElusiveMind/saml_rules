@@ -36,7 +36,7 @@ class SAMLRulesAuthenticationRuleDeleteForm extends ConfirmFormBase {
     $config = \Drupal::service('config.factory')->getEditable('saml_rules.authentication_rules');
     $rules = $config->get('rules');
     unset($rules[$this->rule_machine_name]);
-    $config->set('rules', $rule)->save();
+    $config->set('rules', $rules)->save();
     drupal_set_message($this->t('The authentication rule %rule_name was deleted.', [
       '%rule_name' => $this->rule_machine_name,
     ]));

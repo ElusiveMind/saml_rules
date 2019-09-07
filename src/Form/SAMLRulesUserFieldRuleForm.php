@@ -32,7 +32,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $rule_machine_name = NULL) {
     // Get all of the fields we can map to the user.
-    $configurable_fields = ['name', 'pass', 'mail'];
+    $configurable_fields = ['name' => 'name', 'pass' => 'pass', 'mail' => 'mail'];
     $fields = array_keys(\Drupal::service('entity_field.manager')->getFieldDefinitions('user', 'user'));
     foreach ($fields as $field) {
       $parts = explode('_', $field);
@@ -48,8 +48,6 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     foreach ($fields as $field) {
       $saml_fields[$field] = $field;
     }
-
-    $saml_fields['test'] = "test";
 
     // If there aer no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
