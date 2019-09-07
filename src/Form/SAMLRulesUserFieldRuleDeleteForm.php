@@ -18,13 +18,13 @@ class SAMLRulesUserFieldRuleDeleteForm extends ConfirmFormBase {
    *
    * @var string
    */
-  protected $account_machine_name;
+  protected $rule_machine_name;
 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, string $account_machine_name = NULL) {
-    $this->account_machine_name = $account_machine_name;
+  public function buildForm(array $form, FormStateInterface $form_state, string $rule_machine_name = NULL) {
+    $this->rule_machine_name = $rule_machine_name;
     $form = parent::buildForm($form, $form_state);
     return $form;
   }
@@ -33,14 +33,14 @@ class SAMLRulesUserFieldRuleDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $config = \Drupal::service('config.factory')->getEditable('tweet_feed.twitter_accounts');
-    $accounts = $config->get('accounts');
-    unset($accounts[$this->account_machine_name]);
-    $config->set('accounts', $accounts)->save();
-    drupal_set_message($this->t('The Twitter API account %account was deleted.', [
-      '%account' => $this->account_machine_name,
+    $config = \Drupal::service('config.factory')->getEditable('saml_rules.user_field_rules');
+    $rules = $config->get('rules');
+    unset($rules[$this->rule_machine_name]);
+    $config->set('rules', $rule)->save();
+    drupal_set_message($this->t('The user field rule %rule_name was deleted.', [
+      '%rule_name' => $this->rule_machine_name,
     ]));
-    $form_state->setRedirect('tweet_feed.twitter_accounts');
+    $form_state->setRedirect('saml_rules.user_field_rules_view');
     return;
   }
 
@@ -48,21 +48,21 @@ class SAMLRulesUserFieldRuleDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() : string {
-    return "tweet_feed_twitter_accounts_confirm_delete";
+    return "saml_rules_user_field_rule_delete_form";
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('tweet_feed.twitter_accounts');
+    return new Url('saml_rules.user_field_rules_view');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Do you want to delete %account_machine_name?', ['%account_machine_name' => $this->account_machine_name]);
+    return t('Do you want to delete %rule_name?', ['%rule_name' => $this->rule_machine_name]);
   }
 
 }

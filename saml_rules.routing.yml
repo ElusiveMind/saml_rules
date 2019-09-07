@@ -21,14 +21,14 @@ saml_rules.authentication_rules_add:
   requirements:
     _permission: 'administer saml rules'
 saml_rules.authentication_rules_edit:
-  path: 'admin/config/people/saml-rules/authentication/edit/{rule_name}'
+  path: 'admin/config/people/saml-rules/authentication/edit/{rule_machine_name}'
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
     _title: 'SAML Authentication Rules Form'
   requirements:
     _permission: 'administer saml rules'
 saml_rules.authentication_rules_delete:
-  path: 'admin/config/people/saml-rules/authentication/delete/{rule_name}'
+  path: 'admin/config/people/saml-rules/authentication/delete/{rule_machine_name}'
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleDeleteForm'
     _title: 'Delete a SAML Authentication Rule'

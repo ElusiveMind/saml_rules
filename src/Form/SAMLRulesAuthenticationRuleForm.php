@@ -26,34 +26,36 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     return 'saml_rules_authentication_rules_form';
   }
 
- 
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $rule_name = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, $rule_machine_name = NULL) {
     $config = $this->config('saml_rules.authentication_rules');
     // Set up our settings form for this particular account (new or update)
-    if (!empty($rule_name)) {
+    if (!empty($rule_machine_name)) {
       $rules = $config->get('rules');
-      $rule = $rules[$rule_name];
-      $form['rule_name'] = [
+      $rule = $rules[$rule_machine_name];
+      $form['rule_machine_name'] = [
         '#type' => 'hidden',
-        '#value' => $rule_name,
+        '#value' => $rule_machine_name,
       ];
       $form['rule_update'] = [
         '#type' => 'hidden',
         '#value' => 1,
       ];
-      $saml_attribute = $rule[''];
+
+      $rule_name = $rule['rule_name'];
+      $saml_attribute = $rule['saml_attribute'];
       $saml_value = $rule['saml_value'];
 
       // Actions: assign roles, update email, 
-      $action = $rule['action'];
+      $actions = $rule['actions'];
       $roles = $rule['roles'];
       $email = $rule['email'];
     }
     else {
-      $saml_attribute = $saml_value = $action = $email = NULL;
+      $rule_name = NULL;
+      $saml_attribute = $saml_value = $actions = $email = NULL;
       $roles = ['authenticated' => 'authenticated'];
     }
 
@@ -61,9 +63,17 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#type' => 'fieldset',
       '#title' => $this->t('SAML Rules: Authentication Rule'),
     );
+    $form['authentication_rules']['rule_name'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Name for this rule.'),
+      '#description' => $this->t('A unique name for this rule for descriptive purposes.'),
+      '#max_length' => 255,
+      '#required' => TRUE,
+      '#default_value' => $rule_name,
+    );
     $form['authentication_rules']['saml_attribute'] = array(
       '#type' => 'textfield',
-      '#title' => t('Incoming SAML attribute to evaluate'),
+      '#title' => t('Incoming SAML attribute to evaluate.'),
       '#description' => $this->t('The incoming attribute (variable) name from the SAML service. Note that these are case sensitive.'),
       '#max_length' => 128,
       '#required' => TRUE,
@@ -77,19 +87,19 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $saml_value,
     );
-    $form['authentication_rules']['action'] = array(
-      '#type' => 'select',
+    $form['authentication_rules']['actions'] = [
+      '#type' => 'radios',
       '#title' => $this->t('Type of action to take'),
       '#options' => [
         'roles' => $this->t('Assign roles to account'),
         'email' => $this->t('Alter email address depending on incoming value.'),
       ],
       '#required' => TRUE,
-      '#default_value' => $action,
+      '#default_value' => $actions,
       '#attributes' => [
-        'name' => 'field_select_action',
+        'id' => 'field_select_action',
       ],
-    );
+    ];
     $form['authentication_rules']['roles'] = array(
       '#type' => 'checkboxes',
       '#title' => t('Roles to be assigned.'),
@@ -98,7 +108,10 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#default_value' => $roles,
       '#states' => [
         'visible' => [
-          ':input[name="field_select_action"]' => ['value' => 'roles'],
+          ':input[id="field_select_action"]' => ['value' => 'roles'],
+        ],
+        'required' => [
+          ':input[id="field_select_action"]' => ['value' => 'roles'],
         ],
       ],
     );
@@ -107,11 +120,13 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#title' => $this->t('Change email address value.'),
       '#description' => $this->t('Alter the email adress. Use SAML attribute values by placing the attribute name in brackets ([]).'),
       '#max_length' => 255,
-      '#required' => TRUE,
       '#default_value' => $email,
       '#states' => [
         'visible' => [
-          ':input[name="field_select_action"]' => ['value' => 'email'],
+          ':input[id="field_select_action"]' => ['value' => 'email'],
+        ],
+        'required' => [
+          ':input[id="field_select_action"]' => ['value' => 'email'],
         ],
       ],
     );
@@ -134,33 +149,52 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
     
     $values = $form_state->getValues();
-    $config = $this->config('tweet_feed.twitter_accounts');
-    $accounts = $config->get('accounts');
-    $account_machine_name = preg_replace('/[^a-z0-9]+/', '_', strtolower($values['account_name']));
+    $config = $this->config('saml_rules.authentication_rules');
+    $rules = $config->get('rules');
+    $rule_machine_name = preg_replace('/[^a-z0-9]+/', '_', strtolower($values['rule_name']));
 
-    if (empty($values['account_update']) && !empty($accounts[$account_machine_name])) {
+    // Check for rule machine name collision.
+    if (empty($values['rule_update']) && !empty($rule[$rule_machine_name])) {
       $suffix = 1;
       do {
-        $new_account_machine_name = $account_machine_name . '_' . $suffix;
+        $new_rule_maching_name = $rule_machine_name . '_' . $suffix;
         $suffix++;
       }
-      while (!empty($accounts[$new_account_machine_name]));
-      $account_machine_name = $new_account_machine_name;
+      while (!empty($rules[$new_rule_machine_name]));
+      $rule_machine_name = $new_rule_machine_name;
     }
     
-    if (empty($accounts[$account_machine_name])) {
-      $accounts[$account_machine_name] = [];
+    // Initialize or populate our rules array and machine name.
+    if (empty($rules[$rule_machine_name])) {
+      $rules[$rule_machine_name] = [];
     }
     else {
-      $account_machine_name = $values['account_machine_name'];
+      $rule_machine_name = $values['rule_machine_name'];
     }
-    $accounts[$account_machine_name]['account_name'] = $values['account_name'];
-    $accounts[$account_machine_name]['consumer_key'] = $values['consumer_key'];
-    $accounts[$account_machine_name]['consumer_secret'] = $values['consumer_secret'];
-    $accounts[$account_machine_name]['oauth_token'] = $values['oauth_token'];
-    $accounts[$account_machine_name]['oauth_token_secret'] = $values['oauth_token_secret'];
-    $this->config('tweet_feed.twitter_accounts')
-      ->set('accounts', $accounts)
+
+    // Assignments.
+    $rules[$rule_machine_name]['rule_name'] = $values['rule_name'];
+    $rules[$rule_machine_name]['saml_attribute'] = $values['saml_attribute'];
+    $rules[$rule_machine_name]['saml_value'] = $values['saml_value'];
+    $rules[$rule_machine_name]['actions'] = $values['actions'];
+
+    // Calculate out all the roles being used. Do not store the roles not being used.
+    $roles = [];
+    foreach ($values['roles'] as $rk => $rv) {
+      if ($rk == $rv) {
+        $roles[] = $rv;
+      }
+    }
+    $rules[$rule_machine_name]['roles'] = $roles;
+
+    // Put our email field in as it was provided. Will be up to the hook to parse it.
+    $rules[$rule_machine_name]['email'] = $values['email'];
+
+    $this->config('saml_rules.authentication_rules')
+      ->set('rules', $rules)
       ->save();
+    
+    $form_state->setRedirect('saml_rules.authentication_rules_view');
+
   }
 }
