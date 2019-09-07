@@ -139,7 +139,7 @@ function saml_rules_user_login($account) {
       foreach ($rules as $rule) {
         if ($ndata[$rule['saml_attribute']] == $rule['saml_value']) {
           if ($rule['action'] == 'email') {
-            $email = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['email']);
+            $mail = preg_replace_callback("/\[(\w+)\]/", 'saml_rules_replace_tokens', $rule['email']);
             $user->setEmail($mail);
           }
           else {

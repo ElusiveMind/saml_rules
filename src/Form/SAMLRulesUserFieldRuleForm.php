@@ -35,8 +35,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $configurable_fields = ['name', 'pass', 'mail'];
     $fields = array_keys(\Drupal::service('entity_field.manager')->getFieldDefinitions('user', 'user'));
     foreach ($fields as $field) {
-      list($prefix, $part) = explode('_', $field);
-      if ($prefix == 'field') {
+      $parts = explode('_', $field);
+      if ($parts[0] == 'field') {
         $configurable_fields[$field] = $field;
       }
     }
