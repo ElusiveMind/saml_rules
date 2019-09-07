@@ -31,8 +31,6 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $rule_machine_name = NULL) {
-    $config = $this->config('saml_rules.user_field_rules');
-
     // Get all of the fields we can map to the user.
     $configurable_fields = ['name', 'pass', 'mail'];
     $fields = array_keys(\Drupal::service('entity_field.manager')->getFieldDefinitions('user', 'user'));
@@ -46,20 +44,23 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     // Get our list of SAML attributes that come through the SAML response.
     $saml_fields = [];
     $config = \Drupal::config('saml_rules.settings');
-    $fields = array_keys($resp['attributes']);
+    $fields = $config->get('attributes');
     foreach ($fields as $field) {
       $saml_fields[$field] = $field;
     }
 
+    $saml_fields['test'] = "test";
+
     // If there aer no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
-    if (empty($saml_keys)) {
+    if (empty($saml_fields)) {
       drupal_set_message('Cannot configure User Field Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needsed.', 'error');
       $response = new RedirectResponse(\Drupal::url('saml_rules.user_field_rules_view'));
       $response->send();
     }
     
     // Set up our settings form for this particular account (new or update)
+    $config = $this->config('saml_rules.user_field_rules');
     if (!empty($rule_machine_name)) {
       $rules = $config->get('rules');
       $rule = $rules[$rule_machine_name];
@@ -108,7 +109,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
         'condition' => 'Conditional Assignment',
       ],
       '#required' => TRUE,
-      '#rule_type' => $rule_type,
+      '#default_value' => $rule_type,
       '#attributes' => [
         'id' => 'field_rule_type_action',
       ],
@@ -118,17 +119,19 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       '#type' => 'select',
       '#title' => $this->t('SAML field to check value'),
       '#options' => $saml_fields,
-      '#required' => TRUE,
       '#default_value' => $condition_saml,
       '#states' => [
         'visible' => [
+          ':input[id="field_rule_type_action"]' => ['value' => 'condition'],
+        ],
+        'required' => [
           ':input[id="field_rule_type_action"]' => ['value' => 'condition'],
         ],
       ],
       '#weight' => 30,
     );
     $form['user_field_rules']['condition_operand'] = [
-      '#type' => 'radios',
+      '#type' => 'select',
       '#title' => $this->t('Condition Operand'),
       '#options' => [
         'equal' => $this->t('Equal'),
@@ -149,7 +152,6 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => t('Condition Value'),
       '#description' => $this->t('The value to be compared to the SAML field in this condition'),
-      '#options' => array_map(['\Drupal\Component\Utility\Html', 'escape'], user_role_names(TRUE)),
       '#default_value' => $condition_value,
       '#states' => [
         'visible' => [
@@ -205,7 +207,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     if (empty($values['rule_update']) && !empty($rule[$rule_machine_name])) {
       $suffix = 1;
       do {
-        $new_rule_maching_name = $rule_machine_name . '_' . $suffix;
+        $new_rule_machine_name = $rule_machine_name . '_' . $suffix;
         $suffix++;
       }
       while (!empty($rules[$new_rule_machine_name]));
@@ -229,20 +231,10 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $rules[$rule_machine_name]['user_field'] = $values['user_field'];
     $rules[$rule_machine_name]['user_value'] = $values['user_value'];
 
-
-    $rule_name = $rule['rule_name'];
-    $rule_type = $rule['rule_type'];
-    $condition_saml = $rule['condition_saml'];
-    $condition_operand = $rule['condition_operand'];
-    $condition_value = $rule['condition_value'];
-    $user_field = $rule['user_field'];
-    $user_value = $rule['user_value'];
-
     $this->config('saml_rules.user_field_rules')
       ->set('rules', $rules)
       ->save();
     
     $form_state->setRedirect('saml_rules.user_field_rules_view');
-
   }
 }

@@ -31,7 +31,7 @@ function saml_rules_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_user_login().
  */
 function saml_rules_user_login($account) {
-  $config = \Drupal::config('samlauth.settings');
+  $config = \Drupal::config('samlauth.authentication');
   define('ONELOGINCUSTOMPATH', $config->get('sp_cert_folder'));
   
   $settings = [
@@ -90,12 +90,13 @@ function saml_rules_user_login($account) {
       // passed are available to our admin ui. This ensures they will be available
       // for mapping. We will check a hash of all of the attribute keys ands if it
       // matches what we have stored, we will not update. Otherwise we will.
-      $config = \Drupal::config('saml_rules.settings');
+      $config = \Drupal::configFactory()->getEditable('saml_rules.settings');
       $attributes_hash = $config->get('attributes_hash');
       $keys = array_keys($resp['attributes']);
       if (md5($keys) != $attributes_hash) {
         $config->set('attributes', $keys);
       }
+      $config->save();
 
       // Load our SAML arrributes into PHP variables for string replacement.
       $attributes = array_keys($resp['attributes']);
@@ -107,7 +108,7 @@ function saml_rules_user_login($account) {
       $user = User::load(\Drupal::currentUser()->id());
 
       // User field rule mappings are performed here.
-      $config = $this->config('saml_rules.user_field_rules');
+      $config = \Drupal::config('saml_rules.user_field_rules');
       $rules = $config->get('rules');
       foreach ($rules as $rule) {
         if ($rule['rule_type'] == 'condition') {
@@ -131,7 +132,7 @@ function saml_rules_user_login($account) {
       }
 
       // Authentication rule mappings are performed here.
-      $config = $this->config('saml_rules.authentication_rules');
+      $config = \Drupal::config('saml_rules.authentication_rules');
       $rules = $config->get('rules');
       foreach ($rules as $rule) {
         if ($$rule['saml_attribute'] == $rule['saml_value']) {

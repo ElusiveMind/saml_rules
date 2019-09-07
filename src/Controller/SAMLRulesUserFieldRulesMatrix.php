@@ -2,7 +2,7 @@
 
 namespace Drupal\saml_rules\Controller;
 
-use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Controller\ControllerBase;
 

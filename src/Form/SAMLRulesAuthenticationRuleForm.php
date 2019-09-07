@@ -157,7 +157,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     if (empty($values['rule_update']) && !empty($rule[$rule_machine_name])) {
       $suffix = 1;
       do {
-        $new_rule_maching_name = $rule_machine_name . '_' . $suffix;
+        $new_rule_machine_name = $rule_machine_name . '_' . $suffix;
         $suffix++;
       }
       while (!empty($rules[$new_rule_machine_name]));
