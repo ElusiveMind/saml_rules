@@ -31,7 +31,7 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('saml_rules.settings');
-    $saml_login_path = ($config->get('saml_login_path') != NULL) ? $config->get('saml_login_path') : 'saml/login';
+    $saml_login_path = ($config->get('saml_login_path') != NULL) ? $config->get('saml_login_path') : '/saml/login';
 
     $form['saml_login_path'] = [
       '#type' => 'textfield',
