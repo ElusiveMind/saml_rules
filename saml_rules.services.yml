@@ -5,5 +5,5 @@ services:
       - { name: event_subscriber }
   saml_rules.anonymous_login:
     class: Drupal\saml_rules\EventSubscriber\SAMLRulesAnonymousLogin
-    tag:
+    tags:
       - { name: event_subscriber }

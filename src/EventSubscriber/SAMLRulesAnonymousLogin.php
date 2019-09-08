@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Event subscriber subscribing to KernelEvents::REQUEST.
  */
-class SAMLRulesAnonymousLogin extends EventSubscriberInterface {
+class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
 
   public function __construct() {
     $this->account = \Drupal::currentUser();
@@ -25,7 +25,11 @@ class SAMLRulesAnonymousLogin extends EventSubscriberInterface {
     $config = \Drupal::config('saml_rules.settings');
     $redirect = $config->get('require_auth');
 
-    if ($this->account->isAnonymous() && \Drupal::routeMatch()->getRouteName() != 'user.login' && !empty($redirect)) {
+    if (
+      $this->account->isAnonymous() &&
+      \Drupal::routeMatch()->getRouteName() != 'user.login' &&
+      \Drupal::routeMatch()->getRouteName() != 'user.reset.login' &&
+      !empty($redirect)) {
 
       // add logic to check other routes you want available to anonymous users,
       // otherwise, redirect to login page.
@@ -35,8 +39,7 @@ class SAMLRulesAnonymousLogin extends EventSubscriberInterface {
       //}
 
       $response = new RedirectResponse(\Drupal::url('user.login'));
-      $event->setResponse($response);
-      $event->stopPropagation();
+      $response->send();
     }
   }
 

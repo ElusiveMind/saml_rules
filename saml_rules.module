@@ -33,6 +33,13 @@ function saml_rules_help($route_name, RouteMatchInterface $route_match) {
 function saml_rules_user_login($account) {
   global $ndata;
   $config = \Drupal::config('samlauth.authentication');
+
+  // If we do not have a single sign on service defined, then go no further.
+  $sos = $config->get('idp_single_sign_on_service');
+  if (empty($sos)) {
+    return;
+  }
+
   define('ONELOGINCUSTOMPATH', $config->get('sp_cert_folder'));
   
   $settings = [

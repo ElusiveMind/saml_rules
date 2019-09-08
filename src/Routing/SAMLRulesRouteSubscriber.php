@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Contains \Drupal\saml_rules\Routing\SSORouteSubscriber.
+ * Contains \Drupal\saml_rules\Routing\SAMLRulesRouteSubscriber.
  */
 
 namespace Drupal\saml_rules\Routing;
