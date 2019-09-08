@@ -82,5 +82,6 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
     $this->config('saml_rules.settings')
       ->set('redirect_all', $form_state->getValue('redirect_all'))
       ->save();
+    drupal_flush_all_caches();
   }
 }
