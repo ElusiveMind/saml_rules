@@ -29,6 +29,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       $this->account->isAnonymous() &&
       \Drupal::routeMatch()->getRouteName() != 'user.login' &&
       \Drupal::routeMatch()->getRouteName() != 'user.reset.login' &&
+      \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_login' &&
       !empty($redirect)) {
 
       // add logic to check other routes you want available to anonymous users,
