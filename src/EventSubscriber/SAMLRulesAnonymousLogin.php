@@ -30,14 +30,23 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       \Drupal::routeMatch()->getRouteName() != 'user.login' &&
       \Drupal::routeMatch()->getRouteName() != 'user.reset.login' &&
       \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_login' &&
+      \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_acs' &&
       !empty($redirect)) {
 
-      // add logic to check other routes you want available to anonymous users,
-      // otherwise, redirect to login page.
-      $route_name = \Drupal::routeMatch()->getRouteName();
-      //if (strpos($route_name, 'view') === 0 && strpos($route_name, 'rest_') !== FALSE) {
-      //  return;
-      //}
+      // TODO: add logic to check other routes you want available to anonymous users,
+      // otherwise, redirect to login page. Admin panel to add these paths.
+      //$route_name = \Drupal::routeMatch()->getRouteName();
+
+      $response = new RedirectResponse(\Drupal::url('user.login'));
+      $response->send();
+    }
+
+    // If we're trying to log out and we need not be allowed to log out, then we need
+    // to log back in immediately. TODO: Redirect to the SAML SSO Logout link.
+    if (
+      !$this->account->isAnonymous() &&
+      \Drupal::routeMatch()->getRouteName() == 'user.login' &&
+      !empty($redirect)) {
 
       $response = new RedirectResponse(\Drupal::url('user.login'));
       $response->send();
