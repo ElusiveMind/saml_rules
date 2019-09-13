@@ -27,6 +27,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
 
     if (
       $this->account->isAnonymous() &&
+      \Drupal::routeMatch()->getRouteName() != 'saml_rules.drupal_login' &&
       \Drupal::routeMatch()->getRouteName() != 'user.login' &&
       \Drupal::routeMatch()->getRouteName() != 'user.reset.login' &&
       \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_login' &&

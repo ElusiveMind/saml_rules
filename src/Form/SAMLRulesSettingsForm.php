@@ -56,8 +56,47 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Redirects Drupal login page to the login page for the SSL (SSO Login Path)'),
       '#default_value' => $config->get('redirect_all'),
       '#weight' => 3,
+      '#attributes' => [
+        'id' => 'field_redirect_all',
+      ],
     ];
 
+    $form['drupal_login'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Provide alternative url for Drupal Login'),
+      '#description' => $this->t('Enable the standard Drupal login at a custom path for development or other purposes.'),
+      '#default_value' => $config->get('drupal_login'),
+      '#weight' => 4,
+      '#attributes' => [
+        'id' => 'field_drupal_login',
+      ],
+      '#states' => [
+        'visible' => [
+          ':input[id="field_redirect_all"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[id="field_redirect_all"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['drupal_login_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Custom Drupal login path'),
+      '#description' => $this->t('The custom path (no preceding or trailing slash) to the standard Drupal login.'),
+      '#maxlength' => 255,
+      '#size' => 64,
+      '#default_value' => $config->get('drupal_login_path'),
+      '#weight' => 5,
+      '#states' => [
+        'visible' => [
+          ':input[id="field_drupal_login"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+          ':input[id="field_drupal_login"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
     return parent::buildForm($form, $form_state);
   }
 
@@ -81,6 +120,12 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       ->save();
     $this->config('saml_rules.settings')
       ->set('redirect_all', $form_state->getValue('redirect_all'))
+      ->save();
+    $this->config('saml_rules.settings')
+      ->set('drupal_login', $form_state->getValue('drupal_login'))
+      ->save();
+    $this->config('saml_rules.settings')
+      ->set('drupal_login_path', $form_state->getValue('drupal_login_path'))
       ->save();
     drupal_flush_all_caches();
   }
