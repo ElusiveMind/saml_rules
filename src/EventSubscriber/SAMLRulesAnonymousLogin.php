@@ -19,6 +19,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
 
   public function __construct() {
     $this->account = \Drupal::currentUser();
+    \Drupal::service('page_cache_kill_switch')->trigger();
   }
 
   public function checkAuthStatus(GetResponseEvent $event) {
@@ -55,7 +56,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
   }
 
   public static function getSubscribedEvents() {
-    $events[KernelEvents::REQUEST][] = array('checkAuthStatus');
+    $events[KernelEvents::REQUEST][] = array('checkAuthStatus', 30);
     return $events;
   }
 
