@@ -49,10 +49,10 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       $saml_fields[$field] = $field;
     }
 
-    // If there aer no SAML keys, then we can't do anything. Likely because they have not
+    // If there are no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
     if (empty($saml_fields)) {
-      drupal_set_message('Cannot configure User Field Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needsed.', 'error');
+      drupal_set_message('Cannot configure User Field Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needed.', 'error');
       $response = new RedirectResponse(\Drupal::url('saml_rules.user_field_rules_view'));
       $response->send();
     }
@@ -173,7 +173,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $form['user_field_rules']['user_value'] = array(
       '#type' => 'textfield',
       '#title' => t('User field value'),
-      '#description' => $this->t('The value to be be assigned to the user field. Can be tokens for SAML variables by encasing in brackets ([]). Available SAML tokens: ' . join(', ', array_keys($saml_fields))),
+      '#description' => $this->t('The value to be be assigned to the user field. Can be tokens for SAML variables by encasing in brackets ([]). Available SAML attributes: ' . join(', ', array_keys($saml_fields))),
       '#default_value' => $user_value,
       '#required' => TRUE,
       '#weight' => 70,

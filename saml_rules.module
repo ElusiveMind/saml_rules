@@ -21,7 +21,8 @@ function saml_rules_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.saml_rules':
       $output = '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('This module works with a SAML provider to perform actions when accounts are created. This can be
-        anything from assigning roles to users to configuring actions based on variables inside of the data sent by the SAML provider.') . '</p>';
+        anything from assigning roles to users to configuring user profile values based on data inside the envelope of information
+        sent by the SAML provider.') . '</p>';
       return $output;
     default:
   }

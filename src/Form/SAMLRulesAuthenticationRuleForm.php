@@ -4,6 +4,7 @@ namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class SAMLRulesAuthenticationRuleForm.
@@ -59,6 +60,22 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       $roles = ['authenticated' => 'authenticated'];
     }
 
+    // Get our list of SAML attributes that come through the SAML response.
+    $saml_fields = [];
+    $config = \Drupal::config('saml_rules.settings');
+    $fields = $config->get('attributes');
+    foreach ($fields as $field) {
+      $saml_fields[$field] = $field;
+    }
+
+    // If there are no SAML keys, then we can't do anything. Likely because they have not
+    // logged in via SAML provider yet.
+    if (empty($saml_fields)) {
+      drupal_set_message('Cannot configure Authentication Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needed.', 'error');
+      $response = new RedirectResponse(\Drupal::url('saml_rules.authentication_rules_view'));
+      $response->send();
+    }
+
     $form['authentication_rules'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('SAML Rules: Authentication Rule'),
@@ -70,22 +87,24 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#max_length' => 255,
       '#required' => TRUE,
       '#default_value' => $rule_name,
+      '#weight' => 10,
     );
     $form['authentication_rules']['saml_attribute'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Incoming SAML attribute to evaluate.'),
-      '#description' => $this->t('The incoming attribute (variable) name from the SAML service. Note that these are case sensitive.'),
-      '#max_length' => 128,
-      '#required' => TRUE,
+      '#type' => 'select',
+      '#title' => $this->t('Incoming SAML attribute to evaluate.'),
+      '#options' => $saml_fields,
       '#default_value' => $saml_attribute,
+      '#required' => TRUE,
+      '#weight' => 20,
     );
     $form['authentication_rules']['saml_value'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('SAML value to check for'),
-      '#description' => $this->t('The value to check for in the SAML Attribute.'),
+      '#description' => $this->t('The value to check for in the SAML attribute.'),
       '#max_length' => 255,
       '#required' => TRUE,
       '#default_value' => $saml_value,
+      '#weight' => 30,
     );
     $form['authentication_rules']['actions'] = [
       '#type' => 'radios',
@@ -99,6 +118,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#attributes' => [
         'id' => 'field_select_action',
       ],
+      '#weight' => 40,
     ];
     $form['authentication_rules']['roles'] = array(
       '#type' => 'checkboxes',
@@ -114,11 +134,12 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
           ':input[id="field_select_action"]' => ['value' => 'roles'],
         ],
       ],
+      '#weight' => 50,
     );
     $form['authentication_rules']['email'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Change email address value.'),
-      '#description' => $this->t('Alter the email adress. Use SAML attribute values by placing the attribute name in brackets ([]).'),
+      '#description' => $this->t('Alter the email adress. Use SAML attribute values by placing the attribute name in brackets ([]). Available SAML attributes: ' . join(', ', array_keys($saml_fields))),
       '#max_length' => 255,
       '#default_value' => $email,
       '#states' => [
@@ -129,6 +150,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
           ':input[id="field_select_action"]' => ['value' => 'email'],
         ],
       ],
+      '#weight' => 60,
     );
 
     $form = parent::buildForm($form, $form_state);
