@@ -35,38 +35,52 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
 
     $form['saml_login_path'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('SAML Login Path'),
+      '#title' => $this->t('SAML login URL path'),
       '#description' => $this->t('The URL the user will use to login via the SAML service provider.'),
       '#maxlength' => 255,
       '#size' => 64,
       '#default_value' => $saml_login_path,
       '#required' => TRUE,
-      '#weight' => 1,
+      '#weight' => 10,
     ];
     $form['require_auth'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Require Authentication'),
+      '#title' => $this->t('Require authentication'),
       '#description' => $this->t('Require the user be authenticates in order to access web site.'),
       '#default_value' => $config->get('require_auth'),
-      '#weight' => 2,
+      '#weight' => 20,
     ];
     $form['redirect_all'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Redirect Login Page to SAML'),
-      '#description' => $this->t('Redirects Drupal login page to the login page for the SSL (SSO Login Path)'),
+      '#title' => $this->t('Redirect login page to SAML SSO'),
+      '#description' => $this->t('Redirects Drupal login page to the login page for the SSO service (SAML login URL path)'),
       '#default_value' => $config->get('redirect_all'),
-      '#weight' => 3,
+      '#weight' => 30,
       '#attributes' => [
         'id' => 'field_redirect_all',
       ],
     ];
-
+    $form['redirect_register'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Redirect account registration page to SAML SSO'),
+      '#description' => $this->t('Redirects Drupal account registration page to the login page for the SSO service (SAML login URL path)'),
+      '#default_value' => $config->get('redirect_register'),
+      '#weight' => 35,
+      '#attributes' => [
+        'id' => 'field_redirect_register',
+      ],
+      '#states' => [
+        'disabled' => [
+          ':input[id="field_redirect_all"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
     $form['drupal_login'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Provide alternative url for Drupal Login'),
       '#description' => $this->t('Enable the standard Drupal login at a custom path for development or other purposes.'),
       '#default_value' => $config->get('drupal_login'),
-      '#weight' => 4,
+      '#weight' => 40,
       '#attributes' => [
         'id' => 'field_drupal_login',
       ],
@@ -79,7 +93,6 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
         ],
       ],
     ];
-
     $form['drupal_login_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Custom Drupal login path'),
@@ -87,13 +100,15 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       '#maxlength' => 255,
       '#size' => 64,
       '#default_value' => $config->get('drupal_login_path'),
-      '#weight' => 5,
+      '#weight' => 50,
       '#states' => [
         'visible' => [
           ':input[id="field_drupal_login"]' => ['checked' => TRUE],
+          ':input[id="field_redirect_all"]' => ['checked' => TRUE],
         ],
         'required' => [
           ':input[id="field_drupal_login"]' => ['checked' => TRUE],
+          ':input[id="field_redirect_all"]' => ['checked' => TRUE],
         ],
       ],
     ];
@@ -120,6 +135,9 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       ->save();
     $this->config('saml_rules.settings')
       ->set('redirect_all', $form_state->getValue('redirect_all'))
+      ->save();
+    $this->config('saml_rules.settings')
+      ->set('redirect_register', $form_state->getValue('redirect_register'))
       ->save();
     $this->config('saml_rules.settings')
       ->set('drupal_login', $form_state->getValue('drupal_login'))

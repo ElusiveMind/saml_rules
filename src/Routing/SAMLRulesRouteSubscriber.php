@@ -23,8 +23,14 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     // is configured to do so.
     $config = \Drupal::config('saml_rules.settings');
     $redirect_all = $config->get('redirect_all');
+    $redirect_all = $config->get('redirect_register');
     if (!empty($redirect_all)) {
       if ($route = $collection->get('user.login')) {
+        $route->setPath($config->get('saml_login_path'));
+      }
+    }
+    if (!empty($redirect_register)) {
+      if ($route = $collection->get('user.register')) {
         $route->setPath($config->get('saml_login_path'));
       }
     }
