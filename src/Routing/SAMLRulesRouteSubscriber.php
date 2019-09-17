@@ -24,6 +24,8 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     $config = \Drupal::config('saml_rules.settings');
     $redirect_all = $config->get('redirect_all');
     $redirect_all = $config->get('redirect_register');
+    $saml_account_management_url = $config->get('saml_account_management_url');
+
     if (!empty($redirect_all)) {
       if ($route = $collection->get('user.login')) {
         $route->setPath($config->get('saml_login_path'));
@@ -32,6 +34,20 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     if (!empty($redirect_register)) {
       if ($route = $collection->get('user.register')) {
         $route->setPath($config->get('saml_login_path'));
+      }
+    }
+
+    if (!empty($redirect_register) || !empty($redirect_all)) {
+      if (!empty($saml_account_management_url)) {
+        if ($route = $collection->get('user.page')) {
+          $route->setPath('/saml/manage');
+        }
+        if ($route = $collection->get('user.pass')) {
+          $route->setPath('/saml/manage');
+        }
+        if ($route = $collection->get('user.pass.http')) {
+          $route->setPath('/saml/manage');
+        }
       }
     }
 
@@ -54,5 +70,25 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
       );
       $collection->add('saml_rules.drupal_login', $route);
     }
+
+    // If we are configured to redirect our login page to saml and still want our
+    // Drupal login (for dev purposes) then configure that here.
+    $saml_account_management_url = $config->get('saml_account_management_url');
+    if (!empty($saml_account_management_url)) {
+      $route = new Route('/saml/manage',
+        [
+          '_title' => 'Manage SAML account',
+          '_controller' => '\Drupal\saml_rules\Controller\SAMLRulesManageSAMLAccount::redirect',
+        ],
+        [
+          '_user_is_logged_in' => 'TRUE',
+        ],
+        [
+          '_maintenance_access' => 'TRUE',
+        ]
+      );
+      $collection->add('saml_rules.manage_account', $route);
+    }
   }
+
 }

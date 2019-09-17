@@ -2,7 +2,7 @@ saml_rules.saml_rules:
   path: 'admin/config/people/saml-rules'
   defaults:
     _controller: '\Drupal\saml_rules\Controller\SAMLRulesAuthRulesMatrix::display_rules'
-    _title: 'SAML Authentication Rules Matrix'
+    _title: 'SAML Rules'
   requirements:
     _permission: 'administer saml rules'
 

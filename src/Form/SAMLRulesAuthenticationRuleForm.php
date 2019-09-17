@@ -203,7 +203,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     // Calculate out all the roles being used. Do not store the roles not being used.
     $roles = [];
     foreach ($values['roles'] as $rk => $rv) {
-      if ($rk == $rv) {
+      if ($rk == $rv && !empty($rv)) {
         $roles[] = $rv;
       }
     }
