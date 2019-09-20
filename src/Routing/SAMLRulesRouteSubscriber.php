@@ -78,7 +78,7 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
       $route = new Route('/saml/manage',
         [
           '_title' => 'Manage SAML account',
-          '_controller' => '\Drupal\saml_rules\Controller\SAMLRulesManageSAMLAccount::redirect',
+          '_controller' => '\Drupal\saml_rules\Controller\SAMLRulesManageSAMLAccount::redirectAccountManagement',
         ],
         [
           '_user_is_logged_in' => 'TRUE',

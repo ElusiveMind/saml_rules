@@ -13,7 +13,7 @@ class SAMLRulesManageSAMLAccount extends ControllerBase {
  /**
    * redirect().
    */
-  public function redirect() {
+  public function redirectAccountManagement() {
     $config = $this->config('saml_rules.settings');
     $saml_account_management_url = $config->get('saml_account_management_url');
     $response = new RedirectResponse($saml_account_management_url);
