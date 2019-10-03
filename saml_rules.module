@@ -104,7 +104,7 @@ function saml_rules_user_login($account) {
       $keys = array_keys($resp['attributes']);
       if (md5(serialize($keys)) != $attributes_hash) {
         $config->set('attributes', $keys);
-        $condig->set('attributes_hash', md5(serialize($keys)));
+        $config->set('attributes_hash', md5(serialize($keys)));
       }
       $config->save();
 
