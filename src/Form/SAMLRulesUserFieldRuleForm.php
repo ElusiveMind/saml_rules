@@ -45,8 +45,10 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $saml_fields = [];
     $config = \Drupal::config('saml_rules.settings');
     $fields = $config->get('attributes');
-    foreach ($fields as $field) {
-      $saml_fields[$field] = $field;
+    if (!empty($fields)) {
+      foreach ($fields as $field) {
+        $saml_fields[$field] = $field;
+      }
     }
 
     // If there are no SAML keys, then we can't do anything. Likely because they have not

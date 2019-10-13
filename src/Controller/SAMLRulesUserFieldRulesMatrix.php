@@ -31,16 +31,18 @@ class SAMLRulesUserFieldRulesMatrix extends ControllerBase {
 
     $rows = [];
     $rules = $config->get('rules');
-    foreach ($rules as $rule_machine_name => $rule) {
-      $edit_link = Link::createFromRoute($this->t('Edit'), 'saml_rules.user_field_rules_edit', ['rule_machine_name' => $rule_machine_name]);
-      $delete_link = Link::createFromRoute($this->t('Delete'), 'saml_rules.user_field_rules_delete', ['rule_machine_name' => $rule_machine_name]);
-      $row = [
-        ['data' => $rule['rule_name']],
-        ['data' => $rule_machine_name],
-        ['data' => $edit_link],
-        ['data' => $delete_link],
-      ];
-      $rows[] = $row;
+    if (!empty($rules)) {
+      foreach ($rules as $rule_machine_name => $rule) {
+        $edit_link = Link::createFromRoute($this->t('Edit'), 'saml_rules.user_field_rules_edit', ['rule_machine_name' => $rule_machine_name]);
+        $delete_link = Link::createFromRoute($this->t('Delete'), 'saml_rules.user_field_rules_delete', ['rule_machine_name' => $rule_machine_name]);
+        $row = [
+          ['data' => $rule['rule_name']],
+          ['data' => $rule_machine_name],
+          ['data' => $edit_link],
+          ['data' => $delete_link],
+        ];
+        $rows[] = $row;
+      }
     }
     return [
       '#type' => 'table',
