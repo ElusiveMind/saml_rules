@@ -23,11 +23,13 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     // is configured to do so.
     $config = \Drupal::config('saml_rules.settings');
     $redirect_all = $config->get('redirect_all');
-    $redirect_all = $config->get('redirect_register');
-    $saml_account_management_url = $config->get('saml_account_management_url');
+    $redirect_register = $config->get('redirect_register');
 
     if (!empty($redirect_all)) {
       if ($route = $collection->get('user.login')) {
+        $route->setPath($config->get('saml_login_path'));
+      }
+      if ($route = $collection->get('user.login.http')) {
         $route->setPath($config->get('saml_login_path'));
       }
     }
@@ -38,16 +40,14 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
     }
 
     if (!empty($redirect_register) || !empty($redirect_all)) {
-      if (!empty($saml_account_management_url)) {
-        if ($route = $collection->get('user.page')) {
-          $route->setPath('/saml/manage');
-        }
-        if ($route = $collection->get('user.pass')) {
-          $route->setPath('/saml/manage');
-        }
-        if ($route = $collection->get('user.pass.http')) {
-          $route->setPath('/saml/manage');
-        }
+      if ($route = $collection->get('user.page')) {
+        $route->setPath('/saml/manage');
+      }
+      if ($route = $collection->get('user.pass')) {
+        $route->setPath('/saml/manage');
+      }
+      if ($route = $collection->get('user.pass.http')) {
+        $route->setPath('/saml/manage');
       }
     }
 
