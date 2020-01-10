@@ -32,6 +32,7 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('saml_rules.settings');
     $saml_login_path = ($config->get('saml_login_path') != NULL) ? $config->get('saml_login_path') : '/saml/login';
+    $saml_account_management_url = ($config->get('saml_account_management_url') != NULL) ? $config->get('saml_account_management_url') : '';
 
     $form['saml_login_path'] = [
       '#type' => 'textfield',
@@ -42,6 +43,16 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       '#default_value' => $saml_login_path,
       '#required' => TRUE,
       '#weight' => 10,
+    ];
+    $form['saml_account_management_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('SAML account management URL path'),
+      '#description' => $this->t('The URL the user will use to manage their account at the SAML service provider.'),
+      '#maxlength' => 255,
+      '#size' => 64,
+      '#default_value' => $saml_account_management_url,
+      '#required' => FALSE,
+      '#weight' => 15,
     ];
     $form['require_auth'] = [
       '#type' => 'checkbox',
@@ -130,6 +141,9 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
       ->save();
     $this->config('saml_rules.settings')
       ->set('redirect_register', $form_state->getValue('redirect_register'))
+      ->save();
+    $this->config('saml_rules.settings')
+      ->set('saml_account_management_url', $form_state->getValue('saml_account_management_url'))
       ->save();
     $this->config('saml_rules.settings')
       ->set('drupal_login', $form_state->getValue('drupal_login'))
