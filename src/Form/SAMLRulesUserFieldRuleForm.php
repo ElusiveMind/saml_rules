@@ -2,6 +2,7 @@
 
 namespace Drupal\saml_rules\Form;
 
+use Drupal\Core\Url;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -54,8 +55,11 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     // If there are no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
     if (empty($saml_fields)) {
-      drupal_set_message('Cannot configure User Field Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needed.', 'error');
-      $response = new RedirectResponse(\Drupal::url('saml_rules.user_field_rules_view'));
+      $this->messenger()->addError($this->t('Cannot configure User Field Rules because there 
+        are no available SAML attributes. That may be because you have not interfaced with the 
+        SAML service yet. Login using the SAML service and this should provide the SAML 
+        response attributes needed.'));
+      $response = new RedirectResponse(Url::fromRoute('saml_rules.user_field_rules_view')->toString());
       $response->send();
     }
     
@@ -175,7 +179,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $form['user_field_rules']['user_value'] = array(
       '#type' => 'textfield',
       '#title' => t('User field value'),
-      '#description' => $this->t('The value to be be assigned to the user field. Can be tokens for SAML variables by encasing in brackets ([]). Available SAML attributes: ' . join(', ', array_keys($saml_fields))),
+      '#description' => $this->t('The value to be be assigned to the user field. Can be tokens for 
+        SAML variables by encasing in brackets ([]). Available SAML attributes: ' . join(', ', array_keys($saml_fields))),
       '#default_value' => $user_value,
       '#required' => TRUE,
       '#weight' => 70,

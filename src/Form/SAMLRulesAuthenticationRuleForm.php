@@ -2,6 +2,7 @@
 
 namespace Drupal\saml_rules\Form;
 
+use Drupal\Core\Url;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -73,8 +74,11 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     // If there are no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
     if (empty($saml_fields)) {
-      drupal_set_message('Cannot configure Authentication Rules because there are no available SAML attributes. That may be because you have not interfaced with the SAML service yet. Login using the SAML service and this should provide the SAML response attributes needed.', 'error');
-      $response = new RedirectResponse(\Drupal::url('saml_rules.authentication_rules_view'));
+      $this->messenger()->addError('Cannot configure Authentication Rules because there are no 
+        available SAML attributes. That may be because you have not interfaced with the SAML service 
+        yet. Login using the SAML service and this should provide the SAML response attributes 
+        needed.');
+      $response = new RedirectResponse(Url::fromRoute('saml_rules.authentication_rules_view')->toString());
       $response->send();
     }
 

@@ -2,12 +2,12 @@
 
 namespace Drupal\saml_rules\Form;
 
+use Drupal\Core\Url;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 
 /**
- * Confirmation of SAML Authentication Rul deletion.
+ * Confirmation of SAML Authentication Rule deletion.
  *
  * @ingroup saml_rules
  */
@@ -37,7 +37,7 @@ class SAMLRulesAuthenticationRuleDeleteForm extends ConfirmFormBase {
     $rules = $config->get('rules');
     unset($rules[$this->rule_machine_name]);
     $config->set('rules', $rules)->save();
-    drupal_set_message($this->t('The authentication rule %rule_name was deleted.', [
+    $this->messenger()->addStatus($this->t('The authentication rule %rule_name was deleted.', [
       '%rule_name' => $this->rule_machine_name,
     ]));
     $form_state->setRedirect('saml_rules.authentication_rules_view');

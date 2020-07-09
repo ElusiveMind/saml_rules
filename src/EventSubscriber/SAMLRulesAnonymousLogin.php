@@ -7,7 +7,8 @@
 
 namespace Drupal\saml_rules\EventSubscriber;
 
-use Drupal\Core\Routing\TrustedRedirectResponse;
+use Drupal\Core\Url;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -39,7 +40,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       // otherwise, redirect to login page. Admin panel to add these paths.
       //$route_name = \Drupal::routeMatch()->getRouteName();
 
-      $response = new TrustedRedirectResponse(\Drupal::url('user.login'));
+      $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
       $response->send();
     }
 
@@ -49,10 +50,9 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       !$this->account->isAnonymous() &&
       \Drupal::routeMatch()->getRouteName() == 'user.login' &&
       !empty($redirect)) {
-
-      $response = new TrustedRedirectResponse(\Drupal::url('user.login'));
-      $response->send();
-    }
+        $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
+        $response->send();
+      }
   }
 
   public static function getSubscribedEvents() {
