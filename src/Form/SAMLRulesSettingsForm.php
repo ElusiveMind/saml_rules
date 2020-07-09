@@ -47,7 +47,7 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
     $form['saml_account_management_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('SAML account management URL path'),
-      '#description' => $this->t('The URL the user will use to manage their account at the SAML service provider.'),
+      '#description' => $this->t('The URL the user will use to manage their account at the SAML service provider. Leave this blank to use the default user login page. <b>NOTE: If you do not specify a login redirect page on the <i>samlauth</i> module and provide a URL here, then when a user logs in they will be taken to the page you specify in this field.</b>'),
       '#maxlength' => 255,
       '#size' => 64,
       '#default_value' => $saml_account_management_url,

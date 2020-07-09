@@ -8,16 +8,16 @@ saml_rules.authentication_rules:
   description: 'Rules applied when a user first loggs into the site using a SAML source.'
   route_name: saml_rules.authentication_rules_view
   parent: saml_rules.saml_rules
-  weight: 10
+  weight: 20
 saml_rules.user_field_rules:
   title: 'User Field Rules'
   description: 'User field assignments. Items from SAML that get placed into custom user profile fields when authenticating.'
   route_name: saml_rules.user_field_rules_view
   parent: saml_rules.saml_rules
-  weight: 20
+  weight: 30
 saml_rules.settings_form:
   title: 'SAML Rules Settings'
   description: 'General settings for SAML Rules.'
   route_name: saml_rules.settings_form
   parent: saml_rules.saml_rules
-  weight: 50
+  weight: 10
