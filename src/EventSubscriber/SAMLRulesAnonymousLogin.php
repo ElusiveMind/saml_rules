@@ -40,7 +40,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       // otherwise, redirect to login page. Admin panel to add these paths.
       //$route_name = \Drupal::routeMatch()->getRouteName();
 
-      $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
+      $response = new SecuredRedirectResponse(Url::fromRoute('user.login')->toString());
       $response->send();
     }
 
@@ -50,7 +50,7 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       !$this->account->isAnonymous() &&
       \Drupal::routeMatch()->getRouteName() == 'user.login' &&
       !empty($redirect)) {
-        $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
+        $response = new SecuredRedirectResponse(Url::fromRoute('user.login')->toString());
         $response->send();
       }
   }
