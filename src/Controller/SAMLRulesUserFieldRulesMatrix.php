@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Controller;
 
 use Drupal\Core\Link;
@@ -10,7 +9,6 @@ use Drupal\Core\Controller\ControllerBase;
  * Class SAMLRulesUserFieldRulesMatrix.
  */
 class SAMLRulesUserFieldRulesMatrix extends ControllerBase {
-  
   /**
    * display_rules().
    *
@@ -21,7 +19,7 @@ class SAMLRulesUserFieldRulesMatrix extends ControllerBase {
    */
   public function display_rules() {
     $config = $this->config('saml_rules.user_field_rules');
-    
+
     $header = [
       ['data' => $this->t('Rule Name')],
       ['data' => $this->t('Rule Machine Name')],

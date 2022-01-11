@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Controller;
 
 use Drupal\Core\Link;
@@ -10,18 +9,17 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  * Class SAMLRulesAuthRulesMatrix.
  */
 class SAMLRulesAuthRulesMatrix extends ControllerBase {
-
- /**
-   * display_rules().
-   *
-   * @return array
-   *   Return render array of a table of elements that make up the list
-   *   of available authentication rules or an empty list. Designed to be
-   *   handled by Drupal's configuration management system.
-   */
+  /**
+    * display_rules().
+    *
+    * @return array
+    *   Return render array of a table of elements that make up the list
+    *   of available authentication rules or an empty list. Designed to be
+    *   handled by Drupal's configuration management system.
+    */
   public function display_rules() {
     $config = $this->config('saml_rules.authentication_rules');
-    
+
     $header = [
       ['data' => $this->t('Rule Name')],
       ['data' => $this->t('Rule Machine Name')],

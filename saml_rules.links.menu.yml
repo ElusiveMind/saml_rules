@@ -1,23 +1,23 @@
 saml_rules.saml_rules:
-  title: 'SAML Rules'
-  description: 'Rules for actions that should be taken based on SAML Metadata.'
+  title: "SAML Rules"
+  description: "Rules for actions that should be taken based on SAML Metadata."
   route_name: saml_rules.saml_rules
   parent: user.admin_index
 saml_rules.authentication_rules:
-  title: 'Authentication Rules'
-  description: 'Rules applied when a user first loggs into the site using a SAML source.'
+  title: "Authentication Rules"
+  description: "Rules applied when a user first loggs into the site using a SAML source."
   route_name: saml_rules.authentication_rules_view
   parent: saml_rules.saml_rules
   weight: 20
 saml_rules.user_field_rules:
-  title: 'User Field Rules'
-  description: 'User field assignments. Items from SAML that get placed into custom user profile fields when authenticating.'
+  title: "User Field Rules"
+  description: "User field assignments. Items from SAML that get placed into custom user profile fields when authenticating."
   route_name: saml_rules.user_field_rules_view
   parent: saml_rules.saml_rules
   weight: 30
 saml_rules.settings_form:
-  title: 'SAML Rules Settings'
-  description: 'General settings for SAML Rules.'
+  title: "SAML Rules Settings"
+  description: "General settings for SAML Rules."
   route_name: saml_rules.settings_form
   parent: saml_rules.saml_rules
   weight: 10

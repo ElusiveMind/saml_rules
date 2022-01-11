@@ -4,7 +4,6 @@
  * @file
  * Contains \Drupal\saml_rules\EventSubscriber\SAMLRulesAnonymousLogin.
  */
-
 namespace Drupal\saml_rules\EventSubscriber;
 
 use Drupal\Core\Url;
@@ -17,7 +16,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Event subscriber subscribing to KernelEvents::REQUEST.
  */
 class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
-
   public function __construct() {
     $this->account = \Drupal::currentUser();
     \Drupal::service('page_cache_kill_switch')->trigger();
@@ -35,7 +33,6 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_login' &&
       \Drupal::routeMatch()->getRouteName() != 'samlauth.saml_controller_acs' &&
       !empty($redirect)) {
-
       // TODO: add logic to check other routes you want available to anonymous users,
       // otherwise, redirect to login page. Admin panel to add these paths.
       //$route_name = \Drupal::routeMatch()->getRouteName();
@@ -50,14 +47,13 @@ class SAMLRulesAnonymousLogin implements EventSubscriberInterface {
       !$this->account->isAnonymous() &&
       \Drupal::routeMatch()->getRouteName() == 'user.login' &&
       !empty($redirect)) {
-        $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
-        $response->send();
-      }
+      $response = new RedirectResponse(Url::fromRoute('user.login')->toString());
+      $response->send();
+    }
   }
 
   public static function getSubscribedEvents() {
-    $events[KernelEvents::REQUEST][] = array('checkAuthStatus', 30);
+    $events[KernelEvents::REQUEST][] = ['checkAuthStatus', 30];
     return $events;
   }
-
 }

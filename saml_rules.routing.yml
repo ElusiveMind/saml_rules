@@ -1,73 +1,73 @@
 saml_rules.saml_rules:
-  path: 'admin/config/people/saml-rules'
+  path: "admin/config/people/saml-rules"
   defaults:
     _controller: '\Drupal\saml_rules\Controller\SAMLRulesAuthRulesMatrix::display_rules'
-    _title: 'SAML Rules'
+    _title: "SAML Rules"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 
 saml_rules.authentication_rules_view:
-  path: 'admin/config/people/saml-rules/authentication'
+  path: "admin/config/people/saml-rules/authentication"
   defaults:
     _controller: '\Drupal\saml_rules\Controller\SAMLRulesAuthRulesMatrix::display_rules'
-    _title: 'SAML Authentication Rules Matrix'
+    _title: "SAML Authentication Rules Matrix"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.authentication_rules_add:
-  path: 'admin/config/people/saml-rules/authentication/add'
+  path: "admin/config/people/saml-rules/authentication/add"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
-    _title: 'SAML Authentication Rules Form'
+    _title: "SAML Authentication Rules Form"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.authentication_rules_edit:
-  path: 'admin/config/people/saml-rules/authentication/edit/{rule_machine_name}'
+  path: "admin/config/people/saml-rules/authentication/edit/{rule_machine_name}"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleForm'
-    _title: 'SAML Authentication Rules Form'
+    _title: "SAML Authentication Rules Form"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.authentication_rules_delete:
-  path: 'admin/config/people/saml-rules/authentication/delete/{rule_machine_name}'
+  path: "admin/config/people/saml-rules/authentication/delete/{rule_machine_name}"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesAuthenticationRuleDeleteForm'
-    _title: 'Delete a SAML Authentication Rule'
+    _title: "Delete a SAML Authentication Rule"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 
 saml_rules.user_field_rules_view:
-  path: 'admin/config/people/saml-rules/user-field'
+  path: "admin/config/people/saml-rules/user-field"
   defaults:
     _controller: '\Drupal\saml_rules\Controller\SAMLRulesUserFieldRulesMatrix::display_rules'
-    _title: 'SAML User Field Rules Matrix'
+    _title: "SAML User Field Rules Matrix"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.user_field_rules_add:
-  path: 'admin/config/people/saml-rules/user-field/add'
+  path: "admin/config/people/saml-rules/user-field/add"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesUserFieldRuleForm'
-    _title: 'SAML User Field Rules Form'
+    _title: "SAML User Field Rules Form"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.user_field_rules_edit:
-  path: 'admin/config/people/saml-rules/user-field/edit/{rule_machine_name}'
+  path: "admin/config/people/saml-rules/user-field/edit/{rule_machine_name}"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesUserFieldRuleForm'
-    _title: 'Edit an Existing User Field Rule'
+    _title: "Edit an Existing User Field Rule"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 saml_rules.user_field_rules_delete:
-  path: 'admin/config/people/saml-rules/user-field/delete/{rule_machine_name}'
+  path: "admin/config/people/saml-rules/user-field/delete/{rule_machine_name}"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesUserFieldRuleDeleteForm'
-    _title: 'Delete a User Field Rule'
+    _title: "Delete a User Field Rule"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"
 
 saml_rules.settings_form:
-  path: 'admin/config/people/saml-rules/settings'
+  path: "admin/config/people/saml-rules/settings"
   defaults:
     _form: '\Drupal\saml_rules\Form\SAMLRulesSettingsForm'
-    _title: 'SAML Rules Settings'
+    _title: "SAML Rules Settings"
   requirements:
-    _permission: 'administer saml rules'
+    _permission: "administer saml rules"

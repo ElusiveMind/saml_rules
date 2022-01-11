@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Url;
@@ -11,10 +10,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * Class SAMLRulesUserFieldRuleForm.
  */
 class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
-
- /**
-   * {@inheritdoc}
-   */
+  /**
+    * {@inheritdoc}
+    */
   protected function getEditableConfigNames() {
     return [
       'saml_rules.user_field_rules',
@@ -62,7 +60,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       $response = new RedirectResponse(Url::fromRoute('saml_rules.user_field_rules_view')->toString());
       $response->send();
     }
-    
+
     // Set up our settings form for this particular account (new or update)
     $config = $this->config('saml_rules.user_field_rules');
     if (!empty($rule_machine_name)) {
@@ -84,19 +82,18 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       $condition_value = $rule['condition_value'];
       $user_field = $rule['user_field'];
       $user_value = $rule['user_value'];
-    }
-    else {
+    } else {
       $rule_name = $rule_type = $condition_saml = NULL;
       $condition_operand = $condition_value = $user_field = NULL;
       $user_value = NULL;
     }
 
-    $form['user_field_rules'] = array(
+    $form['user_field_rules'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('SAML Rules: User Field Rule'),
       '#weight' => 0,
-    );
-    $form['user_field_rules']['rule_name'] = array(
+    ];
+    $form['user_field_rules']['rule_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Name for this rule.'),
       '#description' => $this->t('A unique name for this rule for descriptive purposes.'),
@@ -104,8 +101,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $rule_name,
       '#weight' => 10,
-    );
-    $form['user_field_rules']['rule_type'] = array(
+    ];
+    $form['user_field_rules']['rule_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Rule Type'),
       '#options' => [
@@ -118,8 +115,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
         'id' => 'field_rule_type_action',
       ],
       '#weight' => 20,
-    );
-    $form['user_field_rules']['condition_saml'] = array(
+    ];
+    $form['user_field_rules']['condition_saml'] = [
       '#type' => 'select',
       '#title' => $this->t('SAML field to check value'),
       '#options' => $saml_fields,
@@ -133,7 +130,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
         ],
       ],
       '#weight' => 30,
-    );
+    ];
     $form['user_field_rules']['condition_operand'] = [
       '#type' => 'select',
       '#title' => $this->t('Condition Operand'),
@@ -152,7 +149,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       ],
       '#weight' => 40,
     ];
-    $form['user_field_rules']['condition_value'] = array(
+    $form['user_field_rules']['condition_value'] = [
       '#type' => 'textfield',
       '#title' => t('Condition Value'),
       '#description' => $this->t('The value to be compared to the SAML field in this condition'),
@@ -166,8 +163,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
         ],
       ],
       '#weight' => 50,
-    );
-    $form['user_field_rules']['user_field'] = array(
+    ];
+    $form['user_field_rules']['user_field'] = [
       '#type' => 'select',
       '#title' => $this->t('User field assignment'),
       '#description' => $this->t('The field in the user profile the value will be assigned.'),
@@ -175,8 +172,8 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       '#default_value' => $user_field,
       '#required' => TRUE,
       '#weight' => 60,
-    );
-    $form['user_field_rules']['user_value'] = array(
+    ];
+    $form['user_field_rules']['user_value'] = [
       '#type' => 'textfield',
       '#title' => t('User field value'),
       '#description' => $this->t('The value to be be assigned to the user field. Can be tokens for 
@@ -184,7 +181,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       '#default_value' => $user_value,
       '#required' => TRUE,
       '#weight' => 70,
-    );  
+    ];  
 
     $form = parent::buildForm($form, $form_state);
     return $form;
@@ -202,7 +199,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    
+
     $values = $form_state->getValues();
     $config = $this->config('saml_rules.user_field_rules');
     $rules = $config->get('rules');
@@ -214,16 +211,14 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
       do {
         $new_rule_machine_name = $rule_machine_name . '_' . $suffix;
         $suffix++;
-      }
-      while (!empty($rules[$new_rule_machine_name]));
+      } while (!empty($rules[$new_rule_machine_name]));
       $rule_machine_name = $new_rule_machine_name;
     }
-    
+
     // Initialize or populate our rules array and machine name.
     if (empty($rules[$rule_machine_name])) {
       $rules[$rule_machine_name] = [];
-    }
-    else {
+    } else {
       $rule_machine_name = $values['rule_machine_name'];
     }
 
@@ -239,7 +234,7 @@ class SAMLRulesUserFieldRuleForm extends ConfigFormBase {
     $this->config('saml_rules.user_field_rules')
       ->set('rules', $rules)
       ->save();
-    
+
     $form_state->setRedirect('saml_rules.user_field_rules_view');
   }
 }
