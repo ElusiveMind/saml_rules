@@ -1,3 +1,3 @@
 administer saml rules:
-  title: 'Admister SAML Rules configurations'
-  description: 'Allow the changing of SAML Rules settings and rule configurations.'
+  title: "Admister SAML Rules configurations"
+  description: "Allow the changing of SAML Rules settings and rule configurations."

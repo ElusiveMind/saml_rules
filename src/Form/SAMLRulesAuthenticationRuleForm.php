@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Url;
@@ -11,7 +10,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * Class SAMLRulesAuthenticationRuleForm.
  */
 class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
-
   /**
    * {@inheritdoc}
    */
@@ -54,8 +52,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       $actions = $rule['actions'];
       $roles = $rule['roles'];
       $email = $rule['email'];
-    }
-    else {
+    } else {
       $rule_name = NULL;
       $saml_attribute = $saml_value = $actions = $email = NULL;
       $roles = ['authenticated' => 'authenticated'];
@@ -70,7 +67,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
         $saml_fields[$field] = $field;
       }
     }
-    
+
     // If there are no SAML keys, then we can't do anything. Likely because they have not
     // logged in via SAML provider yet.
     if (empty($saml_fields)) {
@@ -82,11 +79,11 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       $response->send();
     }
 
-    $form['authentication_rules'] = array(
+    $form['authentication_rules'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('SAML Rules: Authentication Rule'),
-    );
-    $form['authentication_rules']['rule_name'] = array(
+    ];
+    $form['authentication_rules']['rule_name'] = [
       '#type' => 'textfield',
       '#title' => t('Name for this rule.'),
       '#description' => $this->t('A unique name for this rule for descriptive purposes.'),
@@ -94,16 +91,16 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $rule_name,
       '#weight' => 10,
-    );
-    $form['authentication_rules']['saml_attribute'] = array(
+    ];
+    $form['authentication_rules']['saml_attribute'] = [
       '#type' => 'select',
       '#title' => $this->t('Incoming SAML attribute to evaluate.'),
       '#options' => $saml_fields,
       '#default_value' => $saml_attribute,
       '#required' => TRUE,
       '#weight' => 20,
-    );
-    $form['authentication_rules']['saml_value'] = array(
+    ];
+    $form['authentication_rules']['saml_value'] = [
       '#type' => 'textfield',
       '#title' => $this->t('SAML value to check for'),
       '#description' => $this->t('The value to check for in the SAML attribute.'),
@@ -111,7 +108,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       '#required' => TRUE,
       '#default_value' => $saml_value,
       '#weight' => 30,
-    );
+    ];
     $form['authentication_rules']['actions'] = [
       '#type' => 'radios',
       '#title' => $this->t('Type of action to take'),
@@ -126,7 +123,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       ],
       '#weight' => 40,
     ];
-    $form['authentication_rules']['roles'] = array(
+    $form['authentication_rules']['roles'] = [
       '#type' => 'checkboxes',
       '#title' => t('Roles to be assigned.'),
       '#description' => $this->t('The roles to be assigned based on the criteria above. The "authenticated user" role should always be assigned.'),
@@ -141,8 +138,8 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
         ],
       ],
       '#weight' => 50,
-    );
-    $form['authentication_rules']['email'] = array(
+    ];
+    $form['authentication_rules']['email'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Change email address value.'),
       '#description' => $this->t('Alter the email adress. Use SAML attribute values by placing the attribute name in brackets ([]). Available SAML attributes: ' . join(', ', array_keys($saml_fields))),
@@ -157,7 +154,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
         ],
       ],
       '#weight' => 60,
-    );
+    ];
 
     $form = parent::buildForm($form, $form_state);
     return $form;
@@ -175,7 +172,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    
+
     $values = $form_state->getValues();
     $config = $this->config('saml_rules.authentication_rules');
     $rules = $config->get('rules');
@@ -187,16 +184,14 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
       do {
         $new_rule_machine_name = $rule_machine_name . '_' . $suffix;
         $suffix++;
-      }
-      while (!empty($rules[$new_rule_machine_name]));
+      } while (!empty($rules[$new_rule_machine_name]));
       $rule_machine_name = $new_rule_machine_name;
     }
-    
+
     // Initialize or populate our rules array and machine name.
     if (empty($rules[$rule_machine_name])) {
       $rules[$rule_machine_name] = [];
-    }
-    else {
+    } else {
       $rule_machine_name = $values['rule_machine_name'];
     }
 
@@ -221,8 +216,7 @@ class SAMLRulesAuthenticationRuleForm extends ConfigFormBase {
     $this->config('saml_rules.authentication_rules')
       ->set('rules', $rules)
       ->save();
-    
-    $form_state->setRedirect('saml_rules.authentication_rules_view');
 
+    $form_state->setRedirect('saml_rules.authentication_rules_view');
   }
 }

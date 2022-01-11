@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Url;
@@ -12,7 +11,6 @@ use Drupal\Core\Form\FormStateInterface;
  * @ingroup saml_rules
  */
 class SAMLRulesAuthenticationRuleDeleteForm extends ConfirmFormBase {
-
   /**
    * ID of the item to delete.
    *
@@ -48,7 +46,7 @@ class SAMLRulesAuthenticationRuleDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() : string {
-    return "saml_rules_authentication_rule_delete_form";
+    return 'saml_rules_authentication_rule_delete_form';
   }
 
   /**
@@ -64,5 +62,4 @@ class SAMLRulesAuthenticationRuleDeleteForm extends ConfirmFormBase {
   public function getQuestion() {
     return t('Do you want to delete %rule_name?', ['%rule_name' => $this->rule_machine_name]);
   }
-
 }

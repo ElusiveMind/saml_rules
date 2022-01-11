@@ -1,5 +1,4 @@
 <?php
-
 namespace Drupal\saml_rules\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -9,7 +8,6 @@ use Drupal\Core\Form\FormStateInterface;
  * Class SAMLRulesSettingsForm.
  */
 class SAMLRulesSettingsForm extends ConfigFormBase {
-
   /**
    * {@inheritdoc}
    */
@@ -151,6 +149,6 @@ class SAMLRulesSettingsForm extends ConfigFormBase {
     $this->config('saml_rules.settings')
       ->set('drupal_login_path', $form_state->getValue('drupal_login_path'))
       ->save();
-    \Drupal::service("router.builder")->rebuild();
+    \Drupal::service('router.builder')->rebuild();
   }
 }

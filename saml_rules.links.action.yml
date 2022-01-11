@@ -1,11 +1,11 @@
 saml_rules.authentication_rules_add:
   route_name: saml_rules.authentication_rules_add
-  title: 'Add Authentication Rule'
+  title: "Add Authentication Rule"
   appears_on:
     - saml_rules.authentication_rules_view
     - saml_rules.saml_rules
 saml_rules.user_field_rules_add:
   route_name: saml_rules.user_field_rules_add
-  title: 'Add User Field Rule'
+  title: "Add User Field Rule"
   appears_on:
     - saml_rules.user_field_rules_view

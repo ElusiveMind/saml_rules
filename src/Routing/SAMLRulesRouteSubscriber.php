@@ -3,7 +3,6 @@
  * @file
  * Contains \Drupal\saml_rules\Routing\SAMLRulesRouteSubscriber.
  */
-
 namespace Drupal\saml_rules\Routing;
 
 use Symfony\Component\Routing\Route;
@@ -14,7 +13,6 @@ use Symfony\Component\Routing\RouteCollection;
  * Listens to the dynamic route events.
  */
 class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
-
   /**
    * {@inheritdoc}
    */
@@ -90,5 +88,4 @@ class SAMLRulesRouteSubscriber extends RouteSubscriberBase {
       $collection->add('saml_rules.manage_account', $route);
     }
   }
-
 }
