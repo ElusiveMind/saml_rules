@@ -4,9 +4,9 @@ description: Configure rules based on response data from SAML provider.
 package: User authentication
 version: 8.x-1.x
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9
 
 dependencies:
   - samlauth:samlauth
 
-php: 7.1
+php: 7.4
