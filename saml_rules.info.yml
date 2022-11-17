@@ -2,7 +2,6 @@ name: SAML Rules
 type: module
 description: Configure rules based on response data from SAML provider.
 package: User authentication
-version: 8.x-1.x
 core_version_requirement: ^9
 
 dependencies:
